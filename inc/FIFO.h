@@ -9,8 +9,6 @@ class FIFO : public PageReplacementAlgorithm {
 
 public:
     FIFO(RAM *ram);
-
-    int getPageFaults();
 };
 
 

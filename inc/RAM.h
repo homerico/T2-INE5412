@@ -4,13 +4,15 @@
 
 #include <vector>
 #include "PageFrame.h"
-#include "PageReplacementAlgorithm.h"
 
 class RAM {
 
 public:
     RAM(int frames);
+
     ~RAM();
+
+    PageFrame *getPageFrame(int refPageNeeded);
 
 private:
     std::vector<PageFrame *> pageFrames;

@@ -4,7 +4,7 @@ SRC_DIR = src
 INC_DIR = inc
 OBJ_DIR = obj
 BIN_DIR = bin
-CXXFLAGS = -Wall -Wextra -I$(INC_DIR) -g -std=c++11 -ggdb3
+CXXFLAGS = -Wall -Wextra -Werror -Wstrict-aliasing -I$(INC_DIR) -g -std=c++11 -ggdb3
 EXECUTABLE = $(BIN_DIR)/main
 
 # Lista de fontes e objetos

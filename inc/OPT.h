@@ -9,8 +9,6 @@ class OPT : public PageReplacementAlgorithm {
 
 public:
     OPT(RAM *ram);
-
-    int getPageFaults();
 };
 
 

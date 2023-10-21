@@ -9,9 +9,9 @@ public:
     enum Algorithm {
         FIFO, LRU, OPT
     };
+
 protected:
     RAM *ram;
-    int pageFaults;
 };
 
 

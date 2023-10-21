@@ -5,7 +5,12 @@
 class PageFrame {
 public:
     PageFrame();
-    ~PageFrame();
+
+    ~PageFrame() = default;
+
+    int getRef();
+
+private:
     int page;
     int lastUsed;
 };

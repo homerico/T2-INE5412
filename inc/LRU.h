@@ -9,8 +9,6 @@ class LRU : public PageReplacementAlgorithm {
 
 public:
     LRU(RAM *ram);
-
-    int getPageFaults();
 };
 
 

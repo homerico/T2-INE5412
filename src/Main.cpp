@@ -1,9 +1,7 @@
-
 #include <iostream>
+#include <string>
 #include "RAM.h"
-#include "FIFO.h"
-#include "OPT.h"
-#include "LRU.h"
+#include "CPU.h"
 
 int main (int argc, char* argv[]) {
 
@@ -12,31 +10,41 @@ int main (int argc, char* argv[]) {
         return 0;
     }
 
-    int num_refs = 0;
-    int num_frames = atoi(argv[1]);
+    int ReferencesNum = 0;
+    int phisicalPagesNum = atoi(argv[1]);
 
-    RAM ramFifo(num_frames);
-    FIFO fifo(&ramFifo);
-
-    RAM ramLru(num_frames);
-    LRU lru(&ramLru);
-
-    RAM ramOpt(num_frames);
-    OPT opt(&ramLru);
-
-    char input;
-    // FIXME: o último caractere é lido duas vezes
-    while (!feof(stdin)) {
-        std::cin >> input;
-        std::cout << input << std::endl;
-        num_refs++;
+    std::vector<int> entries;
+    // Substitui o !feof(stdin), que estava causando problemas ao ler o último input duas vezes
+    for (std::string input; std::cin >> input; ) {
+        int tmp = stoi(input);
+        entries.push_back(tmp);
+        ReferencesNum++;
     }
 
-    std::cout << num_frames << "quadros" << std::endl;
-    std::cout << num_refs << "refs" << std::endl;
-    std::cout << "FIFO: " << fifo.getPageFaults() << "PFs" << std::endl;
-    std::cout << "LRU: " << lru.getPageFaults() << "PFs" << std::endl;
-    std::cout << "OPT: " << opt.getPageFaults() << "PFs" << std::endl;
+    RAM ramFifo(phisicalPagesNum);
+    TLB tlbFifo(&ramFifo, PageReplacementAlgorithm::Algorithm::FIFO);
+    MMU mmuFifo(&tlbFifo);
+    CPU cpuFifo(&mmuFifo, entries, 1);
+
+    RAM ramLru(phisicalPagesNum);
+    TLB tlbLru(&ramLru, PageReplacementAlgorithm::Algorithm::LRU);
+    MMU mmuLru(&tlbLru);
+    CPU cpuLru(&mmuLru, entries, 2);
+
+    RAM ramOpt(phisicalPagesNum);
+    TLB tlbOpt(&ramOpt, PageReplacementAlgorithm::Algorithm::OPT);
+    MMU mmuOpt(&tlbOpt);
+    CPU cpuOpt(&mmuOpt, entries, 3);
+
+    cpuFifo.run();
+    cpuLru.run();
+    cpuOpt.run();
+
+    std::cout << phisicalPagesNum << " quadros" << std::endl;
+    std::cout << ReferencesNum << " refs" << std::endl;
+    std::cout << "FIFO: " << tlbFifo.getPageFaults() << " PFs" << std::endl;
+    std::cout << "LRU: " << tlbLru.getPageFaults() << " PFs" << std::endl;
+    std::cout << "OPT: " << tlbOpt.getPageFaults() << " PFs" << std::endl;
 
     return 0;
 }
