@@ -3,7 +3,6 @@
 
 RAM::RAM(int frames) {
     this->pageFrames = std::vector<PageFrame *>(frames);
-    // TODO: Check if this is necessary
     for (int i = 0; i < frames; i++) {
         this->pageFrames[i] = new PageFrame();
     }

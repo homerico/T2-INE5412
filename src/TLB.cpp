@@ -24,6 +24,9 @@ int TLB::getPageFaults() {
 }
 
 PageFrame *TLB::getData(int pageNeeded, int processId) {
+    this->checkPage(pageNeeded, processId);
+    // FIXME: esse método deve apenas procurar se o endereço físico está na TLB, procurar na page table é coisa da MMU
+    //  e page fault não deve ser contado aqui
     PageFrame *pageFrame = this->ram->getPageFrame(pageNeeded);
     // Se for nullptr, significa que houve um miss na TLB
     if (pageFrame == nullptr) {
