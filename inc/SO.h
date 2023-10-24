@@ -1,7 +1,7 @@
 #ifndef T2_SO_H
 #define T2_SO_H
 
-#include <vector>
+#include <map>
 #include <tuple>
 #include "CPU.h"
 #include "RAM.h"
@@ -15,7 +15,7 @@ public:
 
     ~SO() = default;
 
-    void createProcess(std::vector<int> entries);
+    void createProcess(unsigned pid, std::vector<int> entries);
 
     int runProcess(unsigned pid);
 
@@ -38,7 +38,7 @@ private:
     int virtualMemSizePerProcess;
     int activeProcessPid;
     
-    std::vector<Process*> processes;
+    std::map<int, Process*> processes;
 
     PageReplacementAlgorithm* prAlgorithim;
 

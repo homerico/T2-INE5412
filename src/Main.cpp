@@ -6,6 +6,7 @@
 #include "SO.h"
 #include "FIFO.h"
 #include "LRU.h"
+#include "OPT.h"
 
 int main (int argc, char* argv[]) {
 
@@ -42,21 +43,23 @@ int main (int argc, char* argv[]) {
 
     std::vector<int> fifoEntries(entries);
     so.setPageReplacementAlgorithm(new FIFO(pageFramesPerProcess));
-    so.createProcess(fifoEntries);
+    so.createProcess(0, fifoEntries);
     so.runProcess(0);
     int fifoFaults = so.getPageFaults();
 
     std::vector<int> lruEntries(entries);
     so.setPageReplacementAlgorithm(new LRU(pageFramesPerProcess));
-    so.createProcess(lruEntries);
+    so.createProcess(1, lruEntries);
     so.runProcess(1);
     int lruFaults = so.getPageFaults();
-/*
+
+    std::vector<int> optEntries(entries);
     so.setPageReplacementAlgorithm(new OPT(pageFramesPerProcess, entries));
-    so.createProcess(entries);
+    so.createProcess(2, optEntries);
     so.loadProcess(2);
     so.runProcess(2);
-*/
+    int optFaults = so.getPageFaults();
+
 /*
     cpuFifo.run();
     cpuLru.run();
@@ -67,7 +70,7 @@ int main (int argc, char* argv[]) {
     std::cout << ReferencesNum << " refs" << std::endl;
     std::cout << "FIFO: " << fifoFaults << " PFs" << std::endl;
     std::cout << "LRU: " << lruFaults << " PFs" << std::endl;
-    //std::cout << "OPT: " << tlbOpt.getPageFaults() << " PFs" << std::endl;
+    std::cout << "OPT: " << optFaults << " PFs" << std::endl;
 
     return 0;
 }

@@ -12,10 +12,6 @@ public:
 
     virtual ~PageReplacementAlgorithm();
 
-    enum Algorithm {
-        FIFO, LRU, OPT
-    };
-
     void setMemorySpace(RAM::ProcessMemorySpace* pMem) {
         this->pMemSpace = pMem;
     };
