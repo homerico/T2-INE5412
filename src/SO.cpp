@@ -41,7 +41,7 @@ int SO::getAddressFromPageTable(unsigned pid, int virtualAddr) {
         // Page Table Miss
         this->pageMissCount++;
         std::tuple<int,int> memTuple = this->prAlgorithim->findMemory(virtualAddr);
-        pageTable->removeEntry(std::get<0>(memTuple));
+        if (std::get<0>(memTuple) >= 0) pageTable->removeEntry(std::get<0>(memTuple));
         loadPageFromDiskToMemory(pid, virtualAddr, std::get<1>(memTuple));
         return std::get<1>(memTuple);
     }

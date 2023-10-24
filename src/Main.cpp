@@ -60,12 +60,6 @@ int main (int argc, char* argv[]) {
     so.runProcess(2);
     int optFaults = so.getPageFaults();
 
-/*
-    cpuFifo.run();
-    cpuLru.run();
-    cpuOpt.run();
-*/
-
     std::cout << pageFramesPerProcess << " quadros" << std::endl;
     std::cout << ReferencesNum << " refs" << std::endl;
     std::cout << "FIFO: " << fifoFaults << " PFs" << std::endl;
