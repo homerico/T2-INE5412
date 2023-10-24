@@ -5,13 +5,11 @@
 
 class MMU {
 public:
-    MMU(TLB *tlb);
+    MMU(TLB* tlb);
 
     ~MMU() = default;
 
-    int getPageFaults();
-
-    PageFrame *getData(int pageNeeded, int processId);
+    int retreivePhysicalAddress(int pid, int virtualAddr);
 
 private:
     TLB *tlb;

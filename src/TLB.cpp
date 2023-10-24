@@ -3,9 +3,10 @@
 #include "LRU.h"
 #include "FIFO.h"
 
-TLB::TLB(RAM *ram, PageReplacementAlgorithm::Algorithm algorithm) {
-    this->ram = ram;
-    this->pageFaults = 0;
+TLB::TLB(int tlbSize) {
+    this->tlbSize = tlbSize;
+    this->table = new TLBufferEntry[tlbSize];
+    /*
     switch (algorithm) {
         case PageReplacementAlgorithm::Algorithm::OPT:
             this->algorithm = new OPT(ram);
@@ -17,22 +18,13 @@ TLB::TLB(RAM *ram, PageReplacementAlgorithm::Algorithm algorithm) {
             this->algorithm = new FIFO(ram);
             break;
     }
+    */
 }
 
-int TLB::getPageFaults() {
-    return this->pageFaults;
-}
-
-PageFrame *TLB::getData(int pageNeeded, int processId) {
-    this->checkPage(pageNeeded, processId);
-    // FIXME: esse método deve apenas procurar se o endereço físico está na TLB, procurar na page table é coisa da MMU
-    //  e page fault não deve ser contado aqui
-    PageFrame *pageFrame = this->ram->getPageFrame(pageNeeded);
-    // Se for nullptr, significa que houve um miss na TLB
-    if (pageFrame == nullptr) {
-        this->pageFaults++;
-        this->algorithm->replacePage(pageNeeded, processId);
-        pageFrame = this->ram->getPageFrame(pageNeeded);
+int TLB::getTranslation(int virtualAddr, int processId) {
+    for (int i = 0; i < this->tlbSize; ++i) {
+        if (this->table[i].pid == processId && this->table[i].virtualPage == virtualAddr)
+            return table[1].pageFrame; 
     }
-    return pageFrame;
+    return -1; // -1 significa Page Miss
 }

@@ -3,19 +3,23 @@
 
 #include <string>
 #include <vector>
+#include <tuple>
 #include "MMU.h"
 #include "Process.h"
 
 class CPU {
 public:
-    CPU(MMU *mmu, std::vector<int> entries, int id);
+    CPU(MMU *mmu);
 
-    void run();
+    void setActiveProcess(Process* process);
+
+    /* enum EXIT_CODE {NO_ACTIVE_PROCESS, PROCESS_TERMINATED, TLB_HIT, TLB_MISS}; */
+
+    int runUntilNextPageAccess();
 
 private:
-    int id;
     MMU *mmu;
-    Process *process;
+    Process *activeProcess;
 };
 
 

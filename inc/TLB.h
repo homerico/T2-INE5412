@@ -6,20 +6,23 @@
 
 class TLB {
 public:
-    TLB(RAM *ram, PageReplacementAlgorithm::Algorithm algorithm);
+    TLB(int tlbSize);
 
     ~TLB() = default;
 
-    int getPageFaults();
+    struct TLBufferEntry {
+        bool valid;
+        bool modified;
+        int pid;
+        int virtualPage;
+        int pageFrame;
+    };
 
-    PageFrame *getData(int pageNeeded, int processId);
+    int getTranslation(int virtualAddr, int processId);
 
 private:
-    RAM *ram;
-    int pageFaults;
-    PageReplacementAlgorithm *algorithm;
-    // ordem das colunas: valido, pagina, moldura
-    int table[][3];
+    int tlbSize;
+    TLBufferEntry* table;
 };
 
 

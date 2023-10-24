@@ -1,9 +1,15 @@
 #include <iostream>
 #include <string>
+#include <math.h>
 #include "RAM.h"
 #include "CPU.h"
+#include "SO.h"
+#include "FIFO.h"
+#include "LRU.h"
 
 int main (int argc, char* argv[]) {
+
+    /* Leitura do Input*/
 
     if (argc < 2) {
         std::cout << "Como usar: " << argv[0] << " NUMERO_DE_QUADROS < referencias.txt" << std::endl;
@@ -11,7 +17,8 @@ int main (int argc, char* argv[]) {
     }
 
     int ReferencesNum = 0;
-    int phisicalPagesNum = atoi(argv[1]);
+    int pageFramesPerProcess = atoi(argv[1]);
+    int virtualMemSizePerProcess = 32768;
 
     std::vector<int> entries;
     // Substitui o !feof(stdin), que estava causando problemas ao ler o último input duas vezes
@@ -21,30 +28,46 @@ int main (int argc, char* argv[]) {
         ReferencesNum++;
     }
 
-    RAM ramFifo(phisicalPagesNum);
-    TLB tlbFifo(&ramFifo, PageReplacementAlgorithm::Algorithm::FIFO);
-    MMU mmuFifo(&tlbFifo);
-    CPU cpuFifo(&mmuFifo, entries, 1);
+    /* Setup Computer */
 
-    RAM ramLru(phisicalPagesNum);
-    TLB tlbLru(&ramLru, PageReplacementAlgorithm::Algorithm::LRU);
-    MMU mmuLru(&tlbLru);
-    CPU cpuLru(&mmuLru, entries, 2);
+    int tlbSize = int(floor(sqrt(pageFramesPerProcess)));
 
-    RAM ramOpt(phisicalPagesNum);
-    TLB tlbOpt(&ramOpt, PageReplacementAlgorithm::Algorithm::OPT);
-    MMU mmuOpt(&tlbOpt);
-    CPU cpuOpt(&mmuOpt, entries, 3);
+    RAM* ram = new RAM();
+    TLB tlb(tlbSize);
+    MMU mmu(&tlb);
+    CPU cpu(&mmu);
+    SO so(&cpu, ram, pageFramesPerProcess, virtualMemSizePerProcess);
 
+    /* Run Algorithms */
+
+    std::vector<int> fifoEntries(entries);
+    so.setPageReplacementAlgorithm(new FIFO(pageFramesPerProcess));
+    so.createProcess(fifoEntries);
+    so.runProcess(0);
+    int fifoFaults = so.getPageFaults();
+
+    std::vector<int> lruEntries(entries);
+    so.setPageReplacementAlgorithm(new LRU(pageFramesPerProcess));
+    so.createProcess(lruEntries);
+    so.runProcess(1);
+    int lruFaults = so.getPageFaults();
+/*
+    so.setPageReplacementAlgorithm(new OPT(pageFramesPerProcess, entries));
+    so.createProcess(entries);
+    so.loadProcess(2);
+    so.runProcess(2);
+*/
+/*
     cpuFifo.run();
     cpuLru.run();
     cpuOpt.run();
+*/
 
-    std::cout << phisicalPagesNum << " quadros" << std::endl;
+    std::cout << pageFramesPerProcess << " quadros" << std::endl;
     std::cout << ReferencesNum << " refs" << std::endl;
-    std::cout << "FIFO: " << tlbFifo.getPageFaults() << " PFs" << std::endl;
-    std::cout << "LRU: " << tlbLru.getPageFaults() << " PFs" << std::endl;
-    std::cout << "OPT: " << tlbOpt.getPageFaults() << " PFs" << std::endl;
+    std::cout << "FIFO: " << fifoFaults << " PFs" << std::endl;
+    std::cout << "LRU: " << lruFaults << " PFs" << std::endl;
+    //std::cout << "OPT: " << tlbOpt.getPageFaults() << " PFs" << std::endl;
 
     return 0;
 }

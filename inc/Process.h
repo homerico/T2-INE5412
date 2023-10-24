@@ -2,27 +2,21 @@
 #define T2_INE5412_PROCESS_H
 
 #include <vector>
-#include "PageFrame.h"
+#include "Page.h"
 
 class Process {
 public:
-    Process(int id, std::vector<int> entries);
+    Process(int pid, std::vector<int> entries);
 
-    int run();
+    // retorna o endereco virtual da pagina requisitada
+    int runUntilNextPageAccess();
 
-    int getActualPageNeeded();
-
-    int getId();
-
-    void setActualPageFrame(PageFrame *pFrame);
+    int getPid();
 
 private:
-    int id;
-    int actualPageNeeded;
+    int pid;
     std::vector<int> entries;
-    PageFrame *actualPageFrame;
-
-    void consumePageFrame();
+    void executeCode();
 };
 
 

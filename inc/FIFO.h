@@ -1,14 +1,22 @@
 #ifndef T2_FIFO_H
 #define T2_FIFO_H
 
-
+#include <queue>
 #include "PageReplacementAlgorithm.h"
-#include "RAM.h"
 
 class FIFO : public PageReplacementAlgorithm {
-
 public:
-    FIFO(RAM *ram);
+    FIFO(unsigned accessListMaxSize);
+
+    ~FIFO() = default;
+
+    std::tuple<int,int> findMemory(int nextVirtualAdrrAccess);
+
+    void update(int virtualAddr);
+
+private:
+    std::queue<std::tuple<int,int>> accessList;
+    unsigned accessListMaxSize;
 };
 
 

@@ -3,8 +3,8 @@
 MMU::MMU(TLB *tlb) {
     this->tlb = tlb;
 }
-
-PageFrame *MMU::getData(int pageNeeded, int processId) {
+/*
+Page* MMU::translateAddress(int virtualAddr, int processId) {
     PageFrame *pageFrame = this->tlb->getData(pageNeeded, processId);
     if (pageFrame == nullptr) {
         // TODO: implementar page table
@@ -23,4 +23,10 @@ PageFrame *MMU::getData(int pageNeeded, int processId) {
         this->tlb->update(pageNeeded, processId, pageFrame);
     }
     return this->tlb->getData(pageNeeded, processId);
+}
+*/
+
+int MMU::retreivePhysicalAddress(int pid, int virtualAddr) {
+    // Busca o endereco na TLB, retorna -1 se Page Miss, e o endereco fisico caso contrario
+    return this->tlb->getTranslation(pid,virtualAddr);
 }

@@ -1,21 +1,32 @@
 #ifndef T2_RAM_H
 #define T2_RAM_H
 
-
-#include <vector>
-#include "PageFrame.h"
+#include <map>
+#include "Page.h"
+#include "PageTable.h"
 
 class RAM {
 
 public:
-    RAM(int frames);
+    RAM();
 
     ~RAM();
 
-    PageFrame *getPageFrame(int refPageNeeded);
+    struct ProcessMemorySpace {
+        PageTable* pt;
+        Page** pages;
+    };
+
+    Page* getPageFrame(unsigned pid, int addr);
+
+    void savePage(unsigned pid, int addr, Page* page);
+
+    void createProcessMemorySpace(unsigned pid, int virtualMemSize, int pageFrames);
+
+    ProcessMemorySpace* getProcessMemory(unsigned pid);
 
 private:
-    std::vector<PageFrame *> pageFrames;
+    std::map<int, ProcessMemorySpace> memory;
 };
 
 

@@ -3,12 +3,11 @@
 
 
 #include "PageReplacementAlgorithm.h"
-#include "RAM.h"
 
 class OPT : public PageReplacementAlgorithm {
 
 public:
-    OPT(RAM *ram);
+    OPT();
 };
 
 
